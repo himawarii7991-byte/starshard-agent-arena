@@ -1,0 +1,22 @@
+{
+  "name": "starshard-arena",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^4.2.2",
+    "@nomicfoundation/hardhat-node-test-runner": "^3.1.2",
+    "ethers": "^6.17.0",
+    "hardhat": "^3.22.0"
+  },
+  "type": "module"
+}

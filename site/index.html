@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STARSHARD Agent Arena — on-chain leaderboard</title>
+<meta name="description" content="STARSHARD arena survival shooter with an on-chain leaderboard. Free to play. Only Agent ID holders can submit a score, and every .ai name is verified on-chain.">
+<link rel="stylesheet" href="./arena/style.css">
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>STARSHARD <span class="arena">AGENT ARENA</span></h1>
+    <p>Arena survival shooter with an on-chain leaderboard. Free to play — only
+    Agent ID holders can submit a score, and every <code>.ai</code> name is
+    verified on-chain against the Agent ID registry.</p>
+  </header>
+
+  <div class="game-wrap">
+    <canvas id="game" width="1280" height="720"></canvas>
+  </div>
+  <p class="hint">Move <kbd>WASD</kbd> / arrows · aim with the mouse · click or hold to shoot ·
+  dash with <kbd>Shift</kbd> or right-click · nova bomb <kbd>Q</kbd> · pause <kbd>P</kbd> · start with
+  <kbd>Enter</kbd> or a click. Mute with <kbd>M</kbd>.</p>
+
+  <div class="arena">
+
+    <section class="card" id="submit-card">
+      <h2>Your run — submit your score</h2>
+      <div class="score-line">
+        <span id="run-state">State: title</span>
+        <span id="run-last">Last run: 0</span>
+        <span id="run-best">Best: 0</span>
+      </div>
+
+      <h3>1 · Connect wallet</h3>
+      <p class="muted">Your wallet stays in your browser — this page never asks for
+      a QR code, a pairing code, a seed phrase or a private key. Only an
+      injected wallet (Binance Wallet, MetaMask or similar) is used, and every
+      transaction is confirmed by you in your own wallet.</p>
+      <p class="status" id="wallet-status">Checking for a wallet…</p>
+      <button id="btn-connect" type="button">Connect wallet</button>
+      <button id="btn-switch-chain" type="button" class="secondary" hidden>Switch to BNB Smart Chain</button>
+      <p class="status" id="account-line" hidden></p>
+
+      <h3>2 · Agent ID check</h3>
+      <p class="status" id="agent-status">Connect your wallet to check for an Agent ID.</p>
+      <div id="name-row" hidden>
+        <label for="name-input">Your Agent ID name</label><br>
+        <input id="name-input" type="text" placeholder="minkymomo" autocomplete="off" spellcheck="false">
+        <span class="suffix">.ai</span>
+        <button id="btn-verify-name" type="button" class="secondary">Verify name</button>
+        <p class="status" id="name-status"></p>
+      </div>
+
+      <h3>3 · Submit on-chain</h3>
+      <p class="muted">Submitting sends one transaction from your wallet to the
+      leaderboard contract. It records your best score — nothing else is
+      transferred and no approval is requested. The transaction costs a small
+      amount of BNB gas, shown by your wallet before you confirm.</p>
+      <button id="btn-submit-score" type="button" disabled>Submit best score on-chain</button>
+      <p class="status" id="submit-status"></p>
+      <p><a id="tx-link" href="#" target="_blank" rel="noopener" hidden></a></p>
+    </section>
+
+    <section class="card" id="deploy-card">
+      <h2>Deploy the leaderboard contract</h2>
+      <p class="muted">The leaderboard contract is not deployed yet. As the
+      project owner you can deploy it from your own browser wallet in one
+      tap — one transaction, no Agent ID needed to deploy, and the deployer
+      gets no special powers afterwards (no pausing, no withdrawals, no
+      score editing). Review the summary, then confirm the transaction in
+      your own wallet.</p>
+      <p class="status" id="deploy-status">Connect your wallet on BNB Smart Chain to see the deploy summary.</p>
+      <div id="deploy-summary" hidden>
+        <dl class="deploy-summary">
+          <dt>Contract</dt><dd>StarshardArena</dd>
+          <dt>Constructor argument (Agent ID registry)</dt><dd><code id="deploy-registry"></code></dd>
+          <dt>Deployment data</dt><dd id="deploy-data-size"></dd>
+          <dt>Estimated gas</dt><dd id="deploy-gas"></dd>
+          <dt>Gas price (live)</dt><dd id="deploy-gas-price"></dd>
+          <dt>Estimated cost</dt><dd id="deploy-cost"></dd>
+          <dt>Deployer</dt><dd><code id="deploy-deployer"></code></dd>
+          <dt>Your balance</dt><dd id="deploy-balance"></dd>
+          <dt>Value</dt><dd>0 BNB</dd>
+        </dl>
+        <p class="muted">The deployer pays only the gas above. The contract
+        holds no funds and the deployer has no special powers after
+        deployment.</p>
+      </div>
+      <button id="btn-deploy" type="button" disabled>Deploy StarshardArena</button>
+      <p><a id="deploy-tx-link" href="#" target="_blank" rel="noopener" hidden></a></p>
+      <p><a id="deploy-contract-link" href="#" target="_blank" rel="noopener" hidden></a></p>
+      <p class="status" id="deploy-after" hidden></p>
+    </section>
+
+    <section class="card" id="leaderboard-card">
+      <h2>Leaderboard</h2>
+      <p class="status" id="lb-status">Loading leaderboard…</p>
+      <table>
+        <thead>
+          <tr><th>#</th><th>Agent ID</th><th>Best score</th><th>Player</th></tr>
+        </thead>
+        <tbody id="leaderboard-body">
+          <tr><td colspan="4">Loading…</td></tr>
+        </tbody>
+      </table>
+      <p class="muted" id="lb-totals"></p>
+      <p class="muted" id="lb-note"></p>
+      <div id="lb-activity"></div>
+      <button id="btn-refresh-lb" type="button" class="secondary">Refresh leaderboard</button>
+    </section>
+
+  </div>
+
+  <footer>
+    <p id="contract-line">Leaderboard contract: not deployed yet</p>
+    <p><a id="contract-link" href="#" target="_blank" rel="noopener" hidden></a></p>
+    <p>How the board works: the contract only accepts scores from wallets that
+    hold an Agent ID, and the name submitted must resolve to the sender's own
+    Agent ID (<code>ownerOf(uint256(keccak256(name))) == sender</code>). The
+    contract is open-source and holds no funds; the deployer has no special
+    powers after deployment — no pausing, no withdrawals, no score editing.</p>
+    <p>Built for the Binance Agent ID Hackathon. STARSHARD is an original game;
+    this site is not affiliated with or endorsed by Binance.</p>
+  </footer>
+
+</div>
+
+<script type="module" src="./game/src/main.js"></script>
+<script type="module" src="./arena/arena.js"></script>
+</body>
+</html>

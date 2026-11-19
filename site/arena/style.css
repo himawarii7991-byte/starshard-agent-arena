@@ -1,0 +1,166 @@
+/* STARSHARD Agent Arena — page styling. Dark theme to match the game. */
+
+:root {
+  --bg: #05060f;
+  --panel: #0c0e1d;
+  --panel-2: #12152a;
+  --line: #232747;
+  --text: #e8ecff;
+  --muted: #9aa3c7;
+  --accent: #ffd166;
+  --accent-2: #ff4fd8;
+  --ok: #5ee6a0;
+  --warn: #ffb454;
+  --danger: #ff6b6b;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+}
+
+.page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+header { text-align: center; margin: 8px 0 16px; }
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+header h1 .arena { color: var(--accent-2); }
+header p { margin: 6px 0 0; color: var(--muted); }
+
+.game-wrap {
+  display: flex;
+  justify-content: center;
+  background: #000;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+canvas#game {
+  display: block;
+  width: min(100%, calc((100vh - 40px) * 16 / 9));
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background: var(--bg);
+  cursor: crosshair;
+}
+
+.hint { text-align: center; color: var(--muted); font-size: 0.9rem; margin: 8px 0 20px; }
+.hint kbd {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0 5px;
+  font-family: inherit;
+}
+
+.arena {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 860px) {
+  .arena { grid-template-columns: 1fr; }
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+.card h2 { margin: 0 0 10px; font-size: 1.15rem; color: var(--accent); }
+.card h3 { margin: 14px 0 6px; font-size: 1rem; color: var(--text); }
+.card p { margin: 6px 0; }
+
+.muted { color: var(--muted); font-size: 0.92rem; }
+.status { color: var(--muted); font-size: 0.92rem; min-height: 1.4em; }
+.status:empty { min-height: 0; }
+
+.score-line { display: flex; gap: 18px; flex-wrap: wrap; font-size: 1.05rem; }
+.score-line span b { color: var(--accent); }
+
+button {
+  background: var(--accent);
+  color: #1a1405;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 6px 8px 6px 0;
+}
+button:hover:not(:disabled) { filter: brightness(1.08); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+button.secondary {
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--line);
+  font-weight: 600;
+}
+
+input[type="text"] {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 1rem;
+  width: min(320px, 100%);
+  margin-right: 8px;
+}
+input[type="text"]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.suffix { color: var(--muted); }
+
+table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+th, td {
+  text-align: left;
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.95rem;
+}
+th { color: var(--muted); font-weight: 600; }
+td:nth-child(1), th:nth-child(1) { width: 3em; }
+td:nth-child(3), th:nth-child(3) { text-align: right; font-variant-numeric: tabular-nums; }
+tr:last-child td { border-bottom: none; }
+
+#lb-activity ul { margin: 6px 0; padding-left: 20px; }
+#lb-activity li { color: var(--muted); font-size: 0.92rem; }
+
+a { color: var(--accent); }
+
+.deploy-summary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 16px;
+  margin: 10px 0;
+  font-size: 0.95rem;
+}
+.deploy-summary dt { color: var(--muted); }
+.deploy-summary dd { margin: 0; overflow-wrap: anywhere; }
+.deploy-summary code { overflow-wrap: anywhere; }
+
+footer {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+footer p { margin: 6px 0; }
+footer code { color: var(--text); word-break: break-all; }
